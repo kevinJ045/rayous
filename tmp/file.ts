@@ -26,7 +26,7 @@ const _navigate = (path, options = {}) => {
 		let script = document.createElement('script');
 		let onlyjs = pathname+'?onlyjs=true';
 		let index = pathname+"/index.js".replace(/\/\//g, '/');
-		script.src = notIndex ? onlyjs : index;
+		script.src = onlyjs;
 		script.id = "current_script";
 		script.onload = () => {
 			cscript.remove();

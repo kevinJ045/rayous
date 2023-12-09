@@ -2,8 +2,11 @@ import { Button, Component, Container, Image, Text, Widget } from "rayous";
 import { Style, buildProps } from "rayous/extra";
 import { SVG } from "rayous/svg";
 import { React } from "rayous/react";
-import "@/styles/main.tail.css";
 import { CodeBlock } from "./component/codeblock";
+
+import "@/styles/main.tail.css";
+import "@/styles/bg.css";
+import { Bg } from "./component/bg";
 
 function Icon({ic}){
 	return <img src={ic} class="w-[18px] mt-[-4px] inline-block" />;
@@ -27,6 +30,7 @@ export default class extends Component {
 				});
 			},
 			children: [
+				<Bg />,
 				<div class="">
 					<div class="w-full flex h-10 p-3 justify-end">
 						
@@ -101,7 +105,7 @@ export default class extends Component {
 					</CodeBlock>
 				
 				</div>,
-				<div className="my-[50dvh] w-full flex justify-center gap-5 flex-col">
+				<div className="my-[100dvh] w-full flex justify-center gap-5 flex-col">
 
 					<div className="scroll-n">
 
@@ -109,7 +113,7 @@ export default class extends Component {
 						<div class="scroll-in w-full text-[24px] text-center">You can get started by installing rayous with npm.</div>
 
 
-						<CodeBlock class="scroll-in mx-auto my-1 w-auto sm:w-[80%] md:max-w-[400px]">
+						<CodeBlock class="scroll-in max-w-[90%] mx-auto my-1 w-auto sm:w-[80%] md:max-w-[400px]">
 							npm i rayous@latest
 						</CodeBlock>
 					</div>
@@ -140,6 +144,8 @@ export default class extends Component {
 					const itemHeight = item.getBoundingClientRect().height;
 					const itemBottom = item.getBoundingClientRect().bottom;
 					const windowHeight = window.innerHeight;
+
+					if(index > 3) index -= 3;
 	
 					// Check if the element is in the viewport
 					if (itemBottom > 0 && itemTop < windowHeight) {
