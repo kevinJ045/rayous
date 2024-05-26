@@ -137,3 +137,14 @@ pre[class*="language-"] {
  .token.entity {
 	 cursor: help;
  }
+
+/* .animate-up{
+	opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.scroll-in{
+	opacity: 0;
+	transition: all 0.7s ease-out;
+	transform: translateY(300px);
+} */

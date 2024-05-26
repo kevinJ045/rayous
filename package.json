@@ -12,6 +12,7 @@
   "dependencies": {
     "rayous": "^2.8.0"
   },
+  "type": "module",
   "devDependencies": {
     "prismjs": "^1.29.0"
   }

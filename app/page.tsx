@@ -29,6 +29,13 @@ export default class extends Component {
     html.addClass("bg-slate-900 text-white");
     html.style = { zoom: "80%" };
 
+    const code_1 = `import { Text, Container } from "rayous";
+new Container({
+  children: [
+    new Text('Try it!')
+  ]
+})`;
+
     return new Container({
       onMount() {
         const that: Widget = this;
@@ -160,6 +167,36 @@ export default class extends Component {
             </CodeBlock>
           </div>
         </div>,
+        <div className="my-[100dvh] w-full flex justify-center gap-5 flex-col">
+          <div className="scroll-n">
+            <div className="scroll-in w-full font-extrabold text-[60px] text-center">
+              Creating Project
+            </div>
+            <div class="scroll-in w-full text-[24px] text-center">
+              You can use the cli rayous template creator to start
+            </div>
+
+            <CodeBlock class="scroll-in max-w-[90%] mx-auto my-1 w-auto sm:w-[80%] md:max-w-[400px]">
+              npx rayous create
+            </CodeBlock>
+          </div>
+        </div>,
+        <div className="my-[100dvh] w-full flex justify-center gap-5 flex-col">
+          <div className="scroll-n">
+            <div className="scroll-in w-full font-extrabold text-[60px] text-center">
+              Code Structure
+            </div>
+            <div class="scroll-in w-full text-[24px] text-center">
+              Component-Based nested code structure, without the need of JSX.
+            </div>
+
+            <CodeBlock
+              class="scroll-in mx-auto my-1 w-auto sm:w-[80%] md:max-w-[400px]"
+              lang="typescript"
+              text={code_1}>
+            </CodeBlock>
+          </div>
+        </div>,
         <div className="mt-[100dvh] mb-[50dvh]">
           <div className="w-full font-extrabold text-[60px] text-center">
             Start Coding
@@ -181,31 +218,57 @@ export default class extends Component {
 
   afterBuild(props: buildProps): void {
     const that: Widget = props.page!;
-    const element: HTMLElement = that.raw().at(0);
+
+    const windowHeight = window.innerHeight;
+
+    const all = that
+    .raw()
+    .find(".scroll-in").elements;
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          (entry.target as any).isInView = true;
+        } else {
+          (entry.target as any).isInView = false;
+        }
+      });
+    }, { threshold: 0.5 });
+
+    all.forEach(el => observer.observe(el));
 
     window.addEventListener("scroll", () => {
       that
-        .raw()
-        .find(".scroll-in")
+      .raw()
+      .find(".scroll-in")
+        .elements
+        .filter(e => (e as any).isInView)
         .forEach((item: HTMLElement, index: number) => {
           const itemTop = item.getBoundingClientRect().top;
           const itemHeight = item.getBoundingClientRect().height;
           const itemBottom = item.getBoundingClientRect().bottom;
-          const windowHeight = window.innerHeight;
 
-          if (index > 3) index -= 3;
+          index+=1;
+
+          console.log(itemHeight);
 
           // Check if the element is in the viewport
-          if (itemBottom > 0 && itemTop < windowHeight) {
+          if (itemBottom > 0 && itemTop-itemHeight < windowHeight) {
             // Calculate the distance from the center of the screen
-            const distanceToCenter = Math.abs(itemTop - windowHeight / 2);
+            let distanceToCenter = Math.abs(itemTop - windowHeight / 2);
+            if(distanceToCenter < 0) distanceToCenter += itemHeight;
+            if(distanceToCenter > 0) distanceToCenter -= itemHeight;
+
+            // if(itemTop < itemHeight) distanceToCenter = -windowHeight/2;
 
             // Calculate opacity based on the distance to the center
             const opacity =
               1 - (distanceToCenter / (windowHeight / 2)) * (index / 2);
 
             // Ensure opacity doesn't go below 0
-            const finalOpacity = Math.max(0, opacity);
+            let finalOpacity = Math.min(Math.max(0, opacity), 1);
+
+            // if((distanceToCenter < -windowHeight / 4 || distanceToCenter > windowHeight / 4) && finalOpacity == 1) console.log('faulty thing', item.innerText);
 
             // Apply the fade-in effect
             item.style.opacity = finalOpacity.toString();
@@ -213,8 +276,6 @@ export default class extends Component {
             // Apply the parallax effect
             const translateY = ((windowHeight - itemTop) / 5) * (index / 2);
 
-            // Apply the parallax effect
-            item.style.transform = `translateY(${translateY}px)`;
 
             item.style.transform = `translateY(${translateY}px)`;
             item.style.opacity = finalOpacity.toString();
